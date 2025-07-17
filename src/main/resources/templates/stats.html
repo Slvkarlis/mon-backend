@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Statistics</title>
+    <!-- Inclure Chart.js depuis un CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            width: 50%; 
+            display: inline-block;
+        }
+        .chart-container {
+        width: 40%; 
+        display: inline-block;
+        margin-right: 5%; 
+    }
+    </style>
+   
+    
+</head>
+<body>
+    <script>
+        function fetchStatistics() {
+            fetch('stats')
+                .then(response => response.json())
+                .then(data => {
+                    updateCharts(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching statistics:', error);
+                });
+        }
+    
+        function updateCharts(statistics) {
+            // Mettez à jour vos graphiques ici avec les nouvelles données reçues
+        }
+    
+        // Rafraîchir toutes les 2 secondes
+        setInterval(fetchStatistics, 2000);
+    
+        // Appeler fetchStatistics() immédiatement au chargement de la page
+        document.addEventListener('DOMContentLoaded', fetchStatistics);
+    </script>
+    
+    <div class="chart-container">
+        <h2>Statistics BBS</h2>
+        <!-- Créer un canvas pour afficher le graphique -->
+        <canvas id="myChartBBS" width="300" height="300"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>Statistics AVS</h2>
+        <!-- Créer un canvas pour afficher le graphique -->
+        <canvas id="myChartAVS" width="300" height="300"></canvas>
+    </div>
+
+    <script th:inline="javascript">
+        /* Récupérer les statistiques BBS depuis le modèle Thymeleaf */
+        var statisticsBBS = /*[[${statisticsBBS}]]*/ {};
+        var labelsBBS = Object.keys(statisticsBBS);
+        var dataBBS = Object.values(statisticsBBS);
+
+        /* Créer le graphique à barres pour BBS */
+        var ctxBBS = document.getElementById('myChartBBS').getContext('2d');
+        var myChartBBS = new Chart(ctxBBS, {
+            type: 'bar',
+            data: {
+                labels: labelsBBS,
+                datasets: [{
+                    label: 'Quantity',
+                    data: dataBBS,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        /* Récupérer les statistiques AVS depuis le modèle Thymeleaf */
+        var statisticsAVS = /*[[${statisticsAVS}]]*/ {};
+        var labelsAVS = Object.keys(statisticsAVS);
+        var dataAVS = Object.values(statisticsAVS);
+
+        /* Créer le graphique à barres pour AVS */
+        var ctxAVS = document.getElementById('myChartAVS').getContext('2d');
+        var myChartAVS = new Chart(ctxAVS, {
+            type: 'bar',
+            data: {
+                labels: labelsAVS,
+                datasets: [{
+                    label: 'Quantity',
+                    data: dataAVS,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+</body>
+</html>
