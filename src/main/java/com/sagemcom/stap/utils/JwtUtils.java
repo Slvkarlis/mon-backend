@@ -1,6 +1,8 @@
 package com.sagemcom.stap.utils;
 
 import io.jsonwebtoken.*;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -14,17 +16,14 @@ public class JwtUtils {
 
     private final Key key;
 
-    public JwtUtils() {
-        String secret = System.getenv("JWT_SECRET");
-        if (secret == null || secret.length() < 32) {
-            throw new IllegalArgumentException(
-                "JWT_SECRET env variable is missing or too short (minimum 32 characters required)");
+    public JwtUtils(@Value("${jwt.secret}") String jwtSecret) {
+        System.out.println("******************************" + jwtSecret);
+        if (jwtSecret == null || jwtSecret.length() < 32) {
+            throw new IllegalArgumentException("JWT_SECRET env variable is missing or too short (minimum 32 characters required)");
         }
-        // Création de la clé HMAC SHA-256 à partir du secret
-        this.key = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
+        this.key = new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
     }
 
-    // Génère un token avec les claims et une expiration
     public String generateToken(Map<String, Object> claims, long expirationMillis) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expirationMillis);
@@ -37,11 +36,11 @@ public class JwtUtils {
                 .compact();
     }
 
-    // Parse le token et retourne les claims ou lance JwtException si invalide
     public Claims parseToken(String token) throws JwtException {
         return Jwts.parser()
                 .setSigningKey(key)
                 .parseClaimsJws(token)
                 .getBody();
     }
+    
 }

@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 import com.sagemcom.stap.Entity.User;
@@ -11,6 +12,7 @@ import com.sagemcom.stap.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
+@EnableConfigurationProperties
 @EntityScan("com.sagemcom.stap.Entity")
 public class StapApplication {
 
